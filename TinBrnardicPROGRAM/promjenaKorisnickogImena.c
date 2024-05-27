@@ -4,22 +4,22 @@
 #include <stdio.h>
 #include <string.h>
 
-void promjenaKorisnickogImena(Korisnik* korisnik) {
+int promjenaKorisnickogImena(Korisnik* korisnik) {
     char novoIme[MAX_LEN];
     printf("\nUnesite novo korisnicko ime (ili * za povratak): ");
     scanf("%s", novoIme);
     ocistiBuffer();
-    if (strcmp(novoIme, "*") == 0) return;
+    if (strcmp(novoIme, "*") == 0) return 0;
 
     if (korisnickoImePostoji(novoIme)) {
         printf("\n~Korisnicko ime je vec zauzeto~\n\n");
-        return;
+        return 0;
     }
 
     FILE* file = fopen("korisnici.bin", "rb+");
     if (!file) {
         perror("\n~Greska prilikom otvaranja datoteke~\n\n");
-        return;
+        return 0;
     }
 
     long int trenutna_pozicija;
@@ -34,6 +34,8 @@ void promjenaKorisnickogImena(Korisnik* korisnik) {
         }
     }
     fclose(file);
+
+    return 1;
 }
 
 

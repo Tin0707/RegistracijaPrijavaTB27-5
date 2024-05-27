@@ -6,10 +6,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-void promjenaLozinke(Korisnik* korisnik) {
+int promjenaLozinke(Korisnik* korisnik) {
     char izbor;
-    printf("Zelite li unijeti vlastitu lozinku (U) ili da program generira jaku lozinku za vas (G)? ");
+    printf("\nZelite li unijeti vlastitu lozinku (U) ili da program generira jaku lozinku za vas (G)? ");
     scanf(" %c", &izbor);
+    ocistiBuffer();
 
     if (izbor == 'G' || izbor == 'g') {
         generirajLozinku(korisnik->lozinka, MAX_LEN);
@@ -18,11 +19,12 @@ void promjenaLozinke(Korisnik* korisnik) {
     else if (izbor == 'U' || izbor == 'u') {
         printf("Unesite novu lozinku (ili * za povratak): ");
         scanf("%s", korisnik->lozinka);
-        if (strcmp(korisnik->lozinka, "*") == 0) return;
+        ocistiBuffer();
+        if (strcmp(korisnik->lozinka, "*") == 0) return 0;
     }
     else {
-        printf("\n~Neispravan odabir~\n\n");
-        return;
+        printf("\n~Neispravan odabir~\n");
+        return 0;
     }
 
     printf("Jacina lozinke: %s\n", provjeriJacinuLozinke(korisnik->lozinka));
@@ -30,19 +32,21 @@ void promjenaLozinke(Korisnik* korisnik) {
     FILE* file = fopen("korisnici.bin", "rb+");
     if (!file) {
         perror("\n~Greska prilikom otvaranja datoteke~\n\n");
-        return;
+        return 0;
     }
 
     long int trenutna_pozicija;
     Korisnik k;
     while (fread(&k, sizeof(Korisnik), 1, file)) {
         if (strcmp(k.korisnickoIme, korisnik->korisnickoIme) == 0) {
-            trenutna_pozicija = ftell(file) - sizeof(Korisnik); // Zapamti trenutnu poziciju
-            fseek(file, trenutna_pozicija, SEEK_SET); // Vrati se na po?etak zapisa
-            strcpy(korisnik->lozinka, korisnik->lozinka); // Ažuriraj lozinku
+            trenutna_pozicija = ftell(file) - sizeof(Korisnik);
+            fseek(file, trenutna_pozicija, SEEK_SET);
+            strcpy(korisnik->lozinka, korisnik->lozinka);
             fwrite(korisnik, sizeof(Korisnik), 1, file);
             break;
         }
     }
     fclose(file);
+
+    return 1;
 }

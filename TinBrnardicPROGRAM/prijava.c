@@ -45,12 +45,20 @@ int prijava() {
 
                 switch (unos[0]) {
                 case '1':
-                    promjenaKorisnickogImena(&k);
-                    printf("\n~Promjena korisnickog imena uspjesna~\n");
+                    if (promjenaKorisnickogImena(&k)) {
+                        printf("\n~Promjena korisnickog imena uspjesna~\n\n");
+                    }
+                    else {
+                        printf("\n~~Povratak na izbornik~~\n\n");
+                    }
                     break;
                 case '2':
-                    promjenaLozinke(&k);
-                    printf("\n~Promjena lozinke uspjesna~\n");
+                    if (promjenaLozinke(&k)) {
+                        printf("\n~Promjena lozinke uspjesna~\n\n");
+                    }
+                    else {
+                         printf("\n~~Povratak na izbornik~~\n\n");
+                    }
                     break;
                 case '3':
                     brisanjeKorisnickogRacuna(&k);
